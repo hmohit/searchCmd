@@ -7,9 +7,4 @@ class SearchMetaData:
             self.command_list = file_handle.readlines()
 
     def search(self, search_str):
-        result = []
-        for cmd in self.command_list:
-            if search_str in cmd:
-                result.append(cmd)
-
-        return result
+        return [cmd for cmd in self.command_list if search_str in cmd]
