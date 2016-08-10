@@ -4,10 +4,12 @@ from pickle import dump, load
 
 
 def main():
-    parser = ArgumentParser()
-    parser.add_argument('-f', '--file-name', required=False, help='file path to command list')
+    parser = ArgumentParser(description='Search commands from database')
+    parser.add_argument('-f', '--filename', required=False, help='file path to command list')
     parser.add_argument('-s', '--search', required=False, help='enter search string')
-    parser.add_argument('-sd', '--search-dict', required=False, help='enter search string')
+    parser.add_argument('-sd', '--searchDict', required=False, help='enter search string')
+    parser.add_argument('-a', '--addcmd', required=False, help='enter command to'
+                                                               'be added')
 
     try:
         args = vars(parser.parse_args())
@@ -19,18 +21,16 @@ def main():
             print err
             delegate = SearchMetaData()
 
-        if args['file_name'] is not '':
-            delegate.load_new_commands(filename=args['file_name'])
+        if args['filename'] is not None:
+            delegate.load_new_commands(filename=args['filename'])
             delegate.create_dict()
             dump(delegate, open('metadata.raw', 'wb'))
 
-        elif args['search'] is not '':
-            print 'We have following commands for your requested search ' + args['search']
-
+        elif args['search'] is not None:
             for cmd in delegate.search(args['search']):
                 print cmd
 
-        elif args['search_dict'] is not '':
+        elif args['search_dict'] is not None:
             print 'We have following commands for your requested search ' + args['search_dict']
 
             for cmd in delegate.search_dict(args['search_dict']):
