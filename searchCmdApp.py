@@ -17,8 +17,7 @@ def main():
         try:
             delegate = load(open('metadata.raw', 'rb'))
 
-        except Exception as err:
-            print err
+        except Exception:
             delegate = SearchMetaData()
 
         if args['filename'] is not None:
@@ -30,10 +29,10 @@ def main():
             for cmd in delegate.search(args['search']):
                 print cmd
 
-        elif args['search_dict'] is not None:
-            print 'We have following commands for your requested search ' + args['search_dict']
+        elif args['searchDict'] is not None:
+            print 'We have following commands for your requested search ' + args['searchDict']
 
-            for cmd in delegate.search_dict(args['search_dict']):
+            for cmd in delegate.search_dict(args['searchDict']):
                 print cmd
 
     except Exception as err:
