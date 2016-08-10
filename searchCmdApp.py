@@ -19,16 +19,15 @@ def main():
         except Exception as err:
             delegate = SearchMetaData()
 
-        if args['filename'] is not '':
+        if args['filename'] is not None:
             delegate.load_new_commands(filename=args['filename'])
             dump(delegate, open('metadata.raw', 'wb'))
 
-        elif args['search'] is not '':
+        elif args['search'] is not None:
             for cmd in delegate.search(args['search']):
                 print cmd
 
     except Exception as err:
-        print "error"
         print err
 
 
