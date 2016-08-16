@@ -10,7 +10,7 @@ def main():
     parser.add_argument('-S', '--searchDict', required=False, help='enter '
                                                                    'search string')
     parser.add_argument('-a', '--add', required=False, help='enter command to'
-                                                               'be added')
+                                                            'be added')
 
     try:
         args = vars(parser.parse_args())
@@ -21,16 +21,16 @@ def main():
         except Exception:
             delegate = SearchMetaData()
 
-        if args.filename :
+        if args.filename:
             delegate.load_new_commands(filename=args['filename'])
             delegate.create_dict()
             dump(delegate, open('metadata.raw', 'wb'))
 
-        elif args.search :
+        elif args.search:
             for cmd in delegate.search(args['search']):
                 print cmd
 
-        elif args.searchDict :
+        elif args.searchDict:
             print 'We have following commands for your requested search ' + args['searchDict']
 
             for cmd in delegate.search_dict(args['searchDict']):
