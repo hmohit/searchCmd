@@ -13,27 +13,26 @@ def main():
                                                             'be added')
 
     try:
-        args = vars(parser.parse_args())
+        args = parser.parse_args()
 
         try:
             delegate = load(open('metadata.raw', 'rb'))
 
         except Exception:
             delegate = SearchMetaData()
-
         if args.filename:
-            delegate.load_new_commands(filename=args['filename'])
+            delegate.load_new_commands(filename=args.filename)
             delegate.create_dict()
             dump(delegate, open('metadata.raw', 'wb'))
 
         elif args.search:
-            for cmd in delegate.search(args['search']):
+            for cmd in delegate.search(args.search):
                 print cmd
 
         elif args.searchDict:
-            print 'We have following commands for your requested search ' + args['searchDict']
+            print 'We have following commands for your requested search ' + args.searchDict
 
-            for cmd in delegate.search_dict(args['searchDict']):
+            for cmd in delegate.search_dict(args.searchDict):
                 print cmd
 
     except Exception as err:
