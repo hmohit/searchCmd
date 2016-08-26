@@ -11,6 +11,9 @@ class SearchMetaData:
         with open(name=filename) as file_handle:
             self.command_list = file_handle.readlines()
 
+    def add_command(self, cmd):
+        self.command_list.append(cmd)
+
     def create_dict(self):
         for cmd in self.command_list:
             cmd_length = len(cmd)
@@ -20,8 +23,8 @@ class SearchMetaData:
 
     def search(self, search_str):
         result = [cmd for cmd in self.command_list if search_str in cmd]
-        if len(result) is 0:
-            result = self.search_cmd_approx(search_str)
+        #if len(result) is 0:
+            #result = self.search_cmd_approx(search_str)
 
         return result
 
