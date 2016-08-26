@@ -1,11 +1,15 @@
 from collections import defaultdict
-import editdistance
+import sys
 
 
 class SearchMetaData:
     def __init__(self):
         self.command_list = []
         self.command_dict = defaultdict(list)
+        try: 
+            import editdistance
+        except ImportError:
+            pass
 
     def load_new_commands(self, filename):
         with open(name=filename) as file_handle:
@@ -23,8 +27,8 @@ class SearchMetaData:
 
     def search(self, search_str):
         result = [cmd for cmd in self.command_list if search_str in cmd]
-        #if len(result) is 0:
-            #result = self.search_cmd_approx(search_str)
+        if len(result) is 0:
+            result = self.search_cmd_approx(search_str)
 
         return result
 
@@ -35,6 +39,8 @@ class SearchMetaData:
             return self.search_cmd_approx(search_str)
 
     def search_cmd_approx(self, search_str):
+        if 'editdistance' not in sys.modules:
+            return []
         cmd_edit_dist = []
         for cmd in self.command_list:
             cmd_edit_dist.append((cmd, editdistance.eval(cmd, search_str) / max(len(cmd), len(search_str))))
