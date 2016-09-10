@@ -1,16 +1,12 @@
 from __future__ import division
 from collections import defaultdict
-import sys
+from fuzzywuzzy import process
 
 
 class SearchMetaData:
     def __init__(self):
         self.command_list = []
         self.command_dict = defaultdict(list)
-        try: 
-            import editdistance
-        except ImportError:
-            pass
 
     def load_new_commands(self, filename):
         with open(name=filename) as file_handle:
@@ -39,21 +35,7 @@ class SearchMetaData:
         else:
             return self.search_cmd_approx(search_str)
 
-    def score_for_str(self, cmd, search_str):
-        best_score = float('inf')
-        for word in cmd.split():
-            best_score = min(best_score, editdistance.eval(word, search_str) / len(search_str))
-
-        return best_score
-
     def search_cmd_approx(self, search_str):
-        if 'editdistance' not in sys.modules:
-            return []
-        cmd_edit_dist = []
-        for cmd in self.command_list:
-            cmd_edit_dist.append((cmd, self.score_for_str(cmd, search_str)))
-
-        try:
-            return zip(*cmd_edit_dist)[0][:5]
-        except (ValueError, IndexError):
-            return []
+        approx_matches = process.extract(query=search_str, choices=self.command_list, limit=5)
+        approx_matches, _ = zip(*approx_matches)
+        return approx_matches
