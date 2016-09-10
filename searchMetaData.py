@@ -1,16 +1,23 @@
 from __future__ import division
 from collections import defaultdict
-import editdistance
+import sys
 
 
 class SearchMetaData:
     def __init__(self):
         self.command_list = []
         self.command_dict = defaultdict(list)
+        try: 
+            import editdistance
+        except ImportError:
+            pass
 
     def load_new_commands(self, filename):
         with open(name=filename) as file_handle:
             self.command_list = list(set(file_handle.readlines()))
+
+    def add_command(self, cmd):
+        self.command_list.append(cmd)
 
     def create_dict(self):
         for cmd in self.command_list:
@@ -40,6 +47,8 @@ class SearchMetaData:
         return best_score
 
     def search_cmd_approx(self, search_str):
+        if 'editdistance' not in sys.modules:
+            return []
         cmd_edit_dist = []
         for cmd in self.command_list:
             cmd_edit_dist.append((cmd, self.score_for_str(cmd, search_str)))
