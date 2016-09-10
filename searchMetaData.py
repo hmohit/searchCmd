@@ -1,3 +1,4 @@
+from __future__ import division
 from collections import defaultdict
 import editdistance
 
@@ -9,7 +10,7 @@ class SearchMetaData:
 
     def load_new_commands(self, filename):
         with open(name=filename) as file_handle:
-            self.command_list = file_handle.readlines()
+            self.command_list = list(set(file_handle.readlines()))
 
     def create_dict(self):
         for cmd in self.command_list:
@@ -31,13 +32,19 @@ class SearchMetaData:
         else:
             return self.search_cmd_approx(search_str)
 
+    def score_for_str(self, cmd, search_str):
+        best_score = float('inf')
+        for word in cmd.split():
+            best_score = min(best_score, editdistance.eval(word, search_str) / len(search_str))
+
+        return best_score
+
     def search_cmd_approx(self, search_str):
         cmd_edit_dist = []
         for cmd in self.command_list:
-            cmd_edit_dist.append((cmd, editdistance.eval(cmd, search_str) / max(len(cmd), len(search_str))))
+            cmd_edit_dist.append((cmd, self.score_for_str(cmd, search_str)))
 
-        cmd_edit_dist.sort(key=lambda x: x[1])
         try:
-            zip(*cmd_edit_dist)[0][:5]
+            return zip(*cmd_edit_dist)[0][:5]
         except (ValueError, IndexError):
             return []

@@ -5,3 +5,502 @@ cd
 cmd2 gmk -s -d 
 cmd3 tage sd
 gmk target = pizza
+pg_ctl -D /usr/local/var/postgres -l logfile start
+createuser --pwprompt alpha
+createdb -Oalpha -Eutf8 beta
+nano helpcenter/settings/local_settings.py
+subl helpcenter/settings/local_settings.py
+subl .
+subl helpcenter/settings/local_settings.py
+python manage.py migrate
+subl requirements.
+subl requirements
+subl requirements.txt
+subl requirements.in
+git status
+sudo find . -name '*.pyc' -delete
+python manage.py migrate
+git status
+clear
+brew upgrade elasticsearch
+brew install elasticsearch
+python manage.py migrate
+pip install elasticsearch
+python manage.py migrate
+pip install elasticsearch_dsl
+python manage.py migrate
+wget https://zenefits-test.s3.amazonaws.com/help-centers3/export_files_ready.tar.gz
+tar -xvzf export_files_ready.tar.gz
+rm export_files_ready.tar.gz
+wget https://zenefits-test.s3.amazonaws.com/help-centers3/media.tar.gz
+tar -xvzf media.tar.gz
+rm media.tar.gz
+wget https://zenefits-test.s3.amazonaws.com/help-centers3/zenefits_03-31-16.sql.gz
+gunzip zenefits_03-31-16.sql.gz
+python manage.py loadfolder export_files_ready
+python manage.py createsuperuser
+python manage.py runserver 0.0.0.0:4000
+cd code/hc072716/helpcenter/
+source venv/bin/activate
+cp ../../../Downloads/Q\&A_prep\ -\ good_filtered.csv search/data/qa_links.csv
+mkdir search/data/
+cp ../../../Downloads/Q\&A_prep\ -\ good_filtered.csv search/data/qa_links.csv
+mv search/data/ search/help_center_search/
+pwd
+pip install pandas
+python manage.py sh
+python manage.py shell
+python manage.py shell
+python search/help_center_search/backfill_help_center_search.py
+cp search/help_center_search/data/qa_links.csv search/help_center_search/
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+python manage.py shell
+cd code/hc072716/helpcenter/
+source venv/bin/activate
+elasticsearch
+cp create_local_setup.sh code/
+cd code/
+subl create_local_setup.sh
+ls -l ../scripts/
+source create_local_setup.sh yp072816 8754f82a281802113f79d56530e28b3cc35cedab
+ls -l
+subl requirements.txt
+virtualenv venv
+source venv/bin/activate
+cp ../../scripts/local_settings.py yourpeople/
+sudo env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" SWIG_FEATURES="-includeall -I$(brew --prefix openssl)/include" CC=gcc pip install -r requirements.txt
+sudo pip install https://s3-us-west-2.amazonaws.com/zenefits-packages/SymmetryLibraries-1.4.tar.gz
+git lfs pull
+python manage.py createtestdb -y
+python manage.py migrateall -s
+python manage.py zapp_ensure_defaults
+python manage.py zapp_install all
+git status
+git checkout .
+git checkout -b contact_us_page
+clear
+subl ../../scripts/create_users.py
+python manage.py sh
+subl .
+git diff .
+git diff .
+git diff .
+clear
+git diff .
+git checkout .
+git status
+git diff .
+git statuys
+git status
+git checkout public-app/app/pods/application/route.js
+git branch -v
+git add .
+git commit -m "making constact support mobile friendly"
+git push origin contact_us_page
+git status
+git status
+git status
+git status
+git checkout public-app/app/pods/application/route.js
+git status
+git add .
+git commit -m "incorporating previous PR's suggestions"
+git push origin contact_us_page
+subl ../../create_local_setup.sh
+git status
+git checkout public-app/app/pods/application/route.js
+git status
+git diff .
+git status
+git diff public-app/app/pods/contactus/issues/template.hbs
+git checkout public-app/app/pods/contactus/issues/template.hbs
+git status
+git add .
+git commit -m "add query-recommendation pair logging"
+git push origin contact_us_page
+git status
+cd code/yp072816/
+source venv/bin/activate
+initdb /usr/local/var/postgres -E utf8
+clear
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+cd code/yp072816/
+source venv/bin/activate
+moto_server swf
+cd code/yp072816/
+source venv/bin/activate
+sudo java -jar ../../scripts/fakeSMTP-2.0.jar -s -o /tmp
+cd code/yp072816/
+source venv/bin/activate
+cd model-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../public-app/
+sudo npm install
+sudo bower install --allow-root
+sudo ember build -w
+sudo ember build -w
+sudo npm install
+cd code/yp072816/
+source venv/bin/activate
+sudo npm install
+cd component-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../client-app/
+sudo npm install
+sudo bower install --allow-root
+sudo ember build -w
+cd code/hc072716/helpcenter/
+subl .
+source venv/bin/activate
+python manage.py runserver 0.0.0.0:4000
+cd code/hc072716/helpcenter/
+source venv/bin/activate
+rm search/help_center_search/qa_links.csv
+python manage.py shell
+python manage.py shell
+git status
+pip freeze
+pip freeze -l -r
+pip freeze -l
+git branch -v
+cd code/hc072716/helpcenter/
+source venv/bin/activate
+elasticsearch
+/Library/Java/JavaVirtualMachines/jdk1.8.0_77.jdk/Contents/Home/bin/java ; exit;
+cd code/yp072816/
+source venv/bin/activate
+cd public-app/
+sudo ember build -w
+sudo ember build -w
+sudo ember build -w
+sudo ember build -w
+deactivate
+cd ../model-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../
+source venv/bin/activate
+cd model-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../public-app/
+sudo npm install
+sudo bower install --allow-root
+sudo ember build -w
+cd code/yp072816/
+source venv/bin/activate
+cd client-app/
+sudo ember build -w
+sudo ember build -w
+deactivate
+cd ../
+sudo npm install
+cd component-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../client-app/
+sudo npm install
+source venv/bin/activate
+cd ../
+source venv/bin/activate
+sudo npm install
+cd component-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../client-app/
+sudo npm install
+sudo bower install --allow-root
+sudo ember build -w
+cd code/yp072816/
+source venv/bin/activate
+moto_server swf
+moto_server swf
+deactivate
+source venv/bin/activate
+moto_server swf
+cd code/yp072816/
+source venv/bin/activate
+sudo java -jar ../../scripts/fakeSMTP-2.0.jar -s -o /tmp
+sudo java -jar ../../scripts/fakeSMTP-2.0.jar -s -o /tmp
+deactivate
+source venv/bin/activate
+sudo java -jar ../../scripts/fakeSMTP-2.0.jar -s -o /tmp
+cd code/yp072816/
+source venv/bin/activate
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+deactivate
+source venv/bin/activate
+source venv/bin/activate
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+git status
+clear
+source venv/bin/activate
+../../ngrok http 8000
+clear
+git status
+git status
+git diff .
+../../ngrok http 8000
+git status
+git checkout public-app/app/pods/application/route.js
+git status
+git add .
+git commit -m "fixed preferred phone issue"
+git status
+git checkout master
+git pull origin master
+git checkout contact_us_page_3
+git rebase master
+deactivate
+sudo rm -rf venv/
+subl ../../create_local_setup.sh
+subl requirements.txt
+virtualenv venv
+source venv/bin/activate
+cp ../../scripts/local_settings.py yourpeople/
+sudo env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" SWIG_FEATURES="-includeall -I$(brew --prefix openssl)/include" CC=gcc pip install -r requirements.txt
+sudo pip install https://s3-us-west-2.amazonaws.com/zenefits-packages/SymmetryLibraries-1.4.tar.gz
+subl ../../scripts/create_users.py
+git lfs pull
+python manage.py createtestdb -y
+python manage.py migrateall -s
+python manage.py zapp_ensure_defaults
+python manage.py zapp_install all
+python manage.py sh
+git log .
+git config --global user.name "Ankit Gupta"
+git config --global user.email "agupta@zenefits.com"
+git log .
+git rebase -i ace17ac0bc45448fccfcb81a65532054d6598c53
+git status
+git checkout .
+git rebase -i ace17ac0bc45448fccfcb81a65532054d6598c53
+git commit --amend --author="Ankit Gupta agupta@zenefits.com"
+git commit --amend
+git log .
+git rebase -i ace17ac0bc45448fccfcb81a65532054d6598c53
+git log .
+ git reset HEAD~
+git status
+git log .
+ git reset HEAD~
+git status
+git log .
+git status
+git diff .
+git status
+git diff .
+git status
+git status
+git checkout public-app/app/pods/application/route.js
+git status
+git add .
+git push origin contact_us_page_3
+git push origin contact_us_page_3 --force
+git log .
+./ci/bin/trigger-build.py
+sudo ./ci/bin/trigger-build.py
+clear
+source venv/bin/activate
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+clear
+deactivate
+source venv/bin/activate
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+uwsgi yourpeople/uwsgi-dev.ini --home venv/
+clear
+source venv/bin/activate
+moto_server swf
+clear
+deactivate
+moto_server swf
+source venv/bin/activate
+moto_server swf
+clear
+source venv/bin/activate
+sudo java -jar ../../scripts/fakeSMTP-2.0.jar -s -o /tmp
+clear
+deactivate
+sudo npm install
+source venv/bin/activate
+sudo npm install
+sudo java -jar ../../scripts/fakeSMTP-2.0.jar -s -o /tmp
+clear
+cd ../
+source venv/bin/activate
+cd client-app/
+sudo ember build -w
+clear
+deactivate
+cd ..
+source venv/bin/activate
+cd component-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../client-app/
+sudo npm install
+sudo bower install --allow-root
+sudo ember build -w
+cd ..
+source venv/bin/activate
+cd public-app/
+source venv/bin/activate
+cd ..
+cd public-app/
+sudo ember build -w
+clear
+deactivate
+cd ..
+source venv/bin/activate
+sudo npm install
+cd model-library/
+sudo npm install
+sudo bower install --allow-root
+cd ../public-app/
+sudo npm install
+sudo bower install --allow-root
+sudo ember build -w
+unzip Downloads/ngrok-stable-darwin-amd64.zip
+./ngrok help
+/Library/Java/JavaVirtualMachines/jdk1.8.0_77.jdk/Contents/Home/bin/java ; exit;
+/Library/Java/JavaVirtualMachines/jdk1.8.0_77.jdk/Contents/Home/bin/java ; exit;
+cd code/searchCmd/
+git status
+cd searchCmd/
+git status
+git add searchCmdApp.py
+git add searchMetaData.py
+git commit -m "add dict method for search"
+git status
+git pull origin
+git status
+git diff .
+git status
+git status
+git diff
+git status
+git add searchCmdApp.py
+git add searchMetaData.py
+git status
+git commit --amend
+git commit -m "search using dict"
+git push origin master
+git push origin master
+python searchCmdApp.py --filename testfile
+rm metadata.raw
+python searchCmdApp.py --filename testfile
+python searchCmdApp.py --searchDict md2
+python searchCmdApp.py --searchDict gmk
+python searchCmdApp.py --searchDict gmk
+ls -l
+rm -rf searchMetaData.pyc
+python searchCmdApp.py --searchDict gmk
+python searchCmdApp.py --sd gmk
+python searchCmdApp.py -sd gmk
+ls -l
+rm metadata.raw
+python searchCmdApp.py --filename testfile
+rm metadata.raw
+python searchCmdApp.py --filename testfile
+python searchCmdApp.py --search md
+python searchCmdApp.py --searchDict md
+rm metadata.raw
+python searchCmdApp.py --searchDict md
+python searchCmdApp.py --filename testfile
+python searchCmdApp.py --searchDict md
+git status
+git add searchCmdApp.py
+git commit -m "fixed typo errors"
+git push origin master
+git pull
+git status
+rm metadata.raw
+git pull
+git status
+git push origin master
+/Library/Java/JavaVirtualMachines/jdk1.8.0_77.jdk/Contents/Home/bin/java ; exit;
+/Library/Java/JavaVirtualMachines/jdk1.8.0_77.jdk/Contents/Home/bin/java ; exit;
+cd ..
+ls -l
+sudo rm -rf yp080416/
+subl create_local_setup.sh
+source create_local_setup.sh yp081516 a2e679eb00b87f6e42ab97db3fdf11f3a0a4c7d4
+ipython
+cd code/searchCmd/
+git pull
+git pull origin master
+cd searchCmd/
+git pull origin master
+git status
+git add searchCmdApp.py
+git commit -m "fixing indents"
+git push origin master
+ipython
+python
+git status
+git checkout searchMetaData.py
+git pull origin master
+git pull origin master
+git status
+git add searchMetaData.py
+git commit -m "add approx searh"
+git push origin master
+cd code/yp081516/
+source venv/bin/activate
+subl .
+subl ../create_local_setup.sh
+sudo env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" SWIG_FEATURES="-includeall -I$(brew --prefix openssl)/include" CC=gcc pip install -r requirements.txt
+subl requirements.txt
+subl requirements.txt
+sudo env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" SWIG_FEATURES="-includeall -I$(brew --prefix openssl)/include" CC=gcc pip install -r requirements.txt
+sudo pip install https://s3-us-west-2.amazonaws.com/zenefits-packages/SymmetryLibraries-1.4.tar.gz
+git lfs pull
+python manage.py createtestdb -y
+python manage.py migrateall -s
+python manage.py zapp_ensure_defaults
+python manage.py zapp_install all
+python manage.py sh
+deactivate
+git status
+subl .
+subl requirements.txt
+subl ../create_local_setup.sh
+cp ../../scripts/local_settings.py yourpeople/
+sudo env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" SWIG_FEATURES="-includeall -I$(brew --prefix openssl)/include" CC=gcc pip install -r requirements.txt
+virtualenv venv
+sudo env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" SWIG_FEATURES="-includeall -I$(brew --prefix openssl)/include" CC=gcc pip install -r requirements.txt
+source venv/bin/activate
+sudo env LDFLAGS="-L$(brew --prefix openssl)/lib" CFLAGS="-I$(brew --prefix openssl)/include" SWIG_FEATURES="-includeall -I$(brew --prefix openssl)/include" CC=gcc pip install -r requirements.txt
+sudo pip install https://s3-us-west-2.amazonaws.com/zenefits-packages/SymmetryLibraries-1.4.tar.gz
+git lfs pull
+python manage.py createtestdb -y
+python manage.py migrateall -s
+python manage.py zapp_ensure_defaults
+python manage.py zapp_install all
+python manage.py sh
+cd public-app/tests/acceptance/pods/
+mkdir contactus
+cd contactus/
+subl contact-us-click-test.js
+history
+history > hist.txt
