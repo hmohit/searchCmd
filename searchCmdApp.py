@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from searchMetaData import SearchMetaData
 from argparse import ArgumentParser
 from pickle import dump, load

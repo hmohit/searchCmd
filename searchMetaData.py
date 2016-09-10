@@ -37,5 +37,4 @@ class SearchMetaData:
 
     def search_cmd_approx(self, search_str):
         approx_matches = process.extract(query=search_str, choices=self.command_list, limit=5)
-        approx_matches, _ = zip(*approx_matches)
-        return approx_matches
+        return [k for k,v in approx_matches if v > 50]
