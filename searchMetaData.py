@@ -5,15 +5,15 @@ from fuzzywuzzy import process
 
 class SearchMetaData:
     def __init__(self):
-        self.command_list = []
+        self.command_list = set()
         self.command_dict = defaultdict(list)
 
     def load_new_commands(self, filename):
         with open(name=filename) as file_handle:
-            self.command_list = list(set(file_handle.readlines()))
+            self.command_list += set(file_handle.readlines())
 
     def add_command(self, cmd):
-        self.command_list.append(cmd)
+        self.command_list.add(cmd)
 
     def create_dict(self):
         for cmd in self.command_list:
