@@ -29,6 +29,9 @@ class SearchMetaData:
 
         return result
 
+    def delete(self, delete_str):
+        self.command_list.discard(delete_str)
+
     def search_dict(self, search_str):
         if search_str in self.command_dict.keys():
             return self.command_dict[search_str]

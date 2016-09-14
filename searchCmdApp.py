@@ -7,12 +7,13 @@ import os
 
 def main():
     parser = ArgumentParser(description='Search commands from database')
-    parser.add_argument('-f', '--filename', required=False, help='file path to command list')
-    parser.add_argument('-s', '--search', required=False, help='enter search string')
-    parser.add_argument('-S', '--searchDict', required=False, help='enter '
-                                                                   'search string')
-    parser.add_argument('-a', '--add', required=False, help='enter command to'
-                                                            'be added')
+    parser.add_argument('-f', '--filename', help='file path to command list')
+    parser.add_argument('-s', '--search', help='enter search string')
+    parser.add_argument('-S', '--searchDict', help='enter search string')
+    mutex_group1= parser.add_mutually_exclusive_group()
+    mutex_group1.add_argument('-a', '--add', help='enter command to be added')
+    mutex_group1.add_argument('-d', '--delete', action='store_true',
+                              help='enter command to be added')
     meta_file = os.path.join(os.path.dirname(__file__), 'metadata.raw')
     try:
         args = parser.parse_args()
@@ -25,6 +26,14 @@ def main():
         if args.filename:
             delegate.load_new_commands(filename=args.filename)
             delegate.create_dict()
+            dump(delegate, open(meta_file, 'wb'))
+
+        elif args.delete:
+            results = delegate.search(args.search)
+            for k,v  in enumerate(results):
+                print k, ':', v
+            num = int(raw_input('Delete cmd num: '))
+            delegate.delete(results[num])
             dump(delegate, open(meta_file, 'wb'))
 
         elif args.search:
