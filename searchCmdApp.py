@@ -32,8 +32,13 @@ def main():
             for k,v  in enumerate(results):
                 print k, ':', v
             if results:
-                num = int(raw_input('Delete cmd num: '))
-                delegate.delete(results[num])
+                index =  map(int, raw_input('Delete cmd num: ').split('-'))
+                if len(index) == 1:
+                    start, end = index[0], index[0]+1
+                else :
+                    start, end = index[0], index[1]+1
+                for idx in range(start, end):
+                    delegate.delete(results[idx])
                 dump(delegate, open(meta_file, 'wb'))
 
         elif args.search:
