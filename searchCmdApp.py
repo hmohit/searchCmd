@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from searchMetaData import SearchMetaData
 from argparse import ArgumentParser
 from pickle import dump, load
@@ -51,11 +51,11 @@ def main():
                 print cmd
 
         elif args.add:
-            delegate.add_command(args.add[0], set(args.add))
+            delegate.add_command(args.add[0], set(args.add[1:]))
             dump(delegate, open(meta_file, 'wb'))
 
         elif args.ls:
-            delegate.list_all()
+            print delegate
 
     except Exception as err:
         print err
