@@ -37,6 +37,11 @@ class SearchMetaData:
 
         return result[:5]
 
+    def delete(self, delete_str):
+        for cmd in self.command_list:
+            if cmd.command_str is delete_str:
+                self.command_list.discard(cmd)
+
     def search_cmd_approx(self, search_str):
         approx_matches = []
         for cmd in self.command_list:
