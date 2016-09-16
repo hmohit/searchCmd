@@ -31,16 +31,17 @@ class SearchMetaData:
         self.command_list.add(CommandMetaData(command_str=cmd, command_tags=tags))
 
     def search(self, search_str):
-        result = [cmd.command_str for cmd in self.command_list if cmd.is_search_str_in_tags(search_str)]
-        if len(result) is 0:
-            result = self.search_cmd_approx(search_str)
+        #result = [cmd.command_str for cmd in self.command_list if cmd.is_search_str_in_tags(search_str)]
+        #if len(result) is 0:
+        result = self.search_cmd_approx(search_str)
 
         return result[:5]
 
     def delete(self, delete_str):
         for cmd in self.command_list:
-            if cmd.command_str is delete_str:
+            if cmd.command_str == delete_str:
                 self.command_list.discard(cmd)
+                break
 
     def search_cmd_approx(self, search_str):
         approx_matches = []
