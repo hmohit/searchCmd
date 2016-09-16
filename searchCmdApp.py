@@ -9,6 +9,7 @@ def main():
     parser = ArgumentParser(description='Search commands from database')
     parser.add_argument('-f', '--filename', required=False, help='file path to command list')
     parser.add_argument('-s', '--search', required=False, type=str, help='enter search string')
+    parser.add_argument('-l', '--ls', required=False, action='store_true', help='enter search string')
 
     mutex_group1 = parser.add_mutually_exclusive_group()
     mutex_group1.add_argument('-a', '--add', required=False, nargs='+', type=str,
@@ -52,6 +53,9 @@ def main():
         elif args.add:
             delegate.add_command(args.add[0], set(args.add))
             dump(delegate, open(meta_file, 'wb'))
+
+        elif args.ls:
+            delegate.list_all()
 
     except Exception as err:
         print err

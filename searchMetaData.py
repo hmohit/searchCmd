@@ -30,6 +30,10 @@ class SearchMetaData:
     def add_command(self, cmd, tags):
         self.command_list.add(CommandMetaData(command_str=cmd, command_tags=tags))
 
+    def list_all(self):
+        for num, cmd in enumerate(self.command_list):
+            print str(num) + ' ==>> ' + cmd.command_str + ' => [' + ','.join(cmd.command_tags) + ']'
+
     def search(self, search_str):
         result = [cmd.command_str for cmd in self.command_list if cmd.is_search_str_in_tags(search_str)]
         if len(result) is 0:
