@@ -16,13 +16,10 @@ class SearchMetaData:
         self.command_list[cmd] = tags
 
     def __str__(self):
-        #for num, cmd in enumerate(self.command_list):
-        #    print str(num) + ': ' + cmd + ' => [' +' || '.join(self.command_list[cmd])+ ']'
-        str = ''
+        data = ''
         for cmd in self.command_list:
-            str+=' :: '.join([cmd]+list(self.command_list[cmd]))+'\n'
-        return str
-        
+            data += ' :: '.join([cmd] + list(self.command_list[cmd])) + '\n'
+        return data
 
     def delete(self, delete_str):
         del self.command_list[delete_str]
@@ -30,7 +27,7 @@ class SearchMetaData:
     def search(self, search_str):
         approx_matches = []
         for cmd in self.command_list:
-            matches = process.extract(query=search_str, choices=(self.command_list[cmd]|{cmd}), limit=1)
+            matches = process.extract(query=search_str, choices=(self.command_list[cmd] | {cmd}), limit=1)
             if matches and matches[0][1] > 50:
                 approx_matches.append((cmd, matches[0][1]))
 
