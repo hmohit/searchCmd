@@ -2,7 +2,13 @@
 from searchMetaData import SearchMetaData
 from argparse import ArgumentParser
 from pickle import dump, load
+import subprocess
 import os
+
+
+def write_to_clipboard(output):
+    process = subprocess.Popen('pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+    process.communicate(output.encode('utf-8'))
 
 
 def main():
@@ -36,19 +42,35 @@ def main():
                 print k, ':', v
 
             if results:
-                index = map(int, raw_input('Delete cmd num: ').split('-'))
-                if len(index) == 1:
-                    start, end = index[0], index[0] + 1
-                else:
-                    start, end = index[0], index[1] + 1
-                for idx in range(start, end):
-                    delegate.delete(results[idx])
+                inp = raw_input('Delete cmd num: ').strip()
+                if inp:
+                    try:
+                        index = map(int, inp.split('-'))
+                    except:
+                        print "Input should be number or number-number"
+                        return
+                    if len(index) == 1:
+                        start, end = index[0], index[0] + 1
+                    else:
+                        start, end = index[0], index[1] + 1
+                    for idx in range(start, end):
+                        delegate.delete(results[idx])
 
-                dump(delegate, open(meta_file, 'wb'))
+                    dump(delegate, open(meta_file, 'wb'))
 
         elif args.search:
-            for cmd in delegate.search(args.search):
-                print cmd
+            results = delegate.search(args.search)
+            for index, cmd in enumerate(results):
+                print index, ':', cmd
+            if results:
+                inp = raw_input('Enter cmd to cpy to clipboard ').strip()
+                try:
+                    index = int(inp)
+                except:
+                    if inp:
+                        print "Input should be number "
+                    return
+                write_to_clipboard(results[index])
 
         elif args.add:
             delegate.add_command(args.add[0], set(args.add[1:]))

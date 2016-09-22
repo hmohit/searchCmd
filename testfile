@@ -1,7 +1,8 @@
-cmd1 smth -s -d tag1 sdf
+cmd1 smth -s -d tag1 sdf :: ankit bahut badhiya ladhka hai :: ankit badi mehnat karta hai
 rm 
 pwd
-cd 
+
+cd :: test some tag :: test some other tag
 cmd2 gmk -s -d 
 cmd3 tage sd
 gmk target = pizza
