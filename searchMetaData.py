@@ -44,11 +44,15 @@ class SearchMetaData:
             if matches and matches[0][1] > 50:
                 approx_matches.append((cmd, matches[0][1]))
 
-        for pairs in approx_matches:
-            if pairs[0] in self.cache:
-                pairs[1] += len(self.cache) - self.cache.index(pairs[0])
+        def doctor_results(x):
+            if x[0] in self.cache:
+                return x[0], x[1] + len(self.cache) - self.cache.index(x[0])
+            else:
+                return x[0], x[1]
 
+        approx_matches = map(lambda x: doctor_results(x), approx_matches)
         approx_matches.sort(key=lambda x: x[1], reverse=True)
+
         if approx_matches:
             return zip(*approx_matches)[0][:5]
         else:
