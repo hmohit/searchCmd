@@ -5,6 +5,16 @@ from fuzzywuzzy import process
 class SearchMetaData:
     def __init__(self):
         self.command_list = {}
+        self.cache = []
+        self.cache_size = 10
+
+    def insert_in_cache(self, element):
+        if element in self.cache:
+            self.cache.remove(element)
+        elif len(self.cache) == self.cache_size:
+            self.cache.pop()
+
+        self.cache.insert(0, element)
 
     def load_new_commands(self, filename):
         with open(name=filename) as file_handle:
@@ -22,6 +32,9 @@ class SearchMetaData:
         return data
 
     def delete(self, delete_str):
+        if delete_str in self.cache:
+            self.cache.remove(delete_str)
+
         del self.command_list[delete_str]
 
     def search(self, search_str):
@@ -30,6 +43,10 @@ class SearchMetaData:
             matches = process.extract(query=search_str, choices=(self.command_list[cmd] | {cmd}), limit=1)
             if matches and matches[0][1] > 50:
                 approx_matches.append((cmd, matches[0][1]))
+
+        for pairs in approx_matches:
+            if pairs[0] in self.cache:
+                pairs[1] += len(self.cache) - self.cache.index(pairs[0])
 
         approx_matches.sort(key=lambda x: x[1], reverse=True)
         if approx_matches:

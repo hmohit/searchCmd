@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+import subprocess
+import os
+
 from searchMetaData import SearchMetaData
 from argparse import ArgumentParser
 from pickle import dump, load
-import subprocess
-import os
 
 
 def write_to_clipboard(output):
@@ -46,7 +47,7 @@ def main():
                 if inp:
                     try:
                         index = map(int, inp.split('-'))
-                    except:
+                    except StandardError:
                         print "Input should be number or number-number"
                         return
                     if len(index) == 1:
@@ -62,15 +63,19 @@ def main():
             results = delegate.search(args.search)
             for index, cmd in enumerate(results):
                 print index, ':', cmd
+
             if results:
                 inp = raw_input('Enter cmd to cpy to clipboard ').strip()
                 try:
                     index = int(inp)
-                except:
+                except StandardError:
                     if inp:
                         print "Input should be number "
                     return
+
                 write_to_clipboard(results[index])
+                delegate.insert_in_cache(results[index])
+                dump(delegate, open(meta_file, 'wb'))
 
         elif args.add:
             delegate.add_command(args.add[0], set(args.add[1:]))
