@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-from searchMetaData import SearchMetaData
-from argparse import ArgumentParser
-from pickle import dump, load
 import subprocess
 import os
 import sys
 import readline
 import threading
+
+from searchMetaData import SearchMetaData
+from argparse import ArgumentParser
+from pickle import dump, load
 
 
 def write_to_clipboard(output):
@@ -50,7 +51,7 @@ def main():
                 if inp:
                     try:
                         index = map(int, inp.split('-'))
-                    except:
+                    except StandardError:
                         print "Input should be number or number-number"
                         return
                     if len(index) == 1:
@@ -68,6 +69,24 @@ def main():
             in_str = raw_input('>')
             t.join()
             search_str(in_str.strip(), delegate, 1)
+
+            '''results = delegate.search(args.search)
+            for index, cmd in enumerate(results):
+                print index, ':', cmd
+
+            if results:
+                inp = raw_input('Enter cmd to cpy to clipboard ').strip()
+                try:
+                    index = int(inp)
+                except StandardError:
+                    if inp:
+                        print "Input should be number "
+                    return
+
+                write_to_clipboard(results[index])
+                delegate.insert_in_cache(results[index])
+                dump(delegate, open(meta_file, 'wb'))
+                '''
 
         elif args.add:
             delegate.add_command(args.add[0], set(args.add[1:]))
