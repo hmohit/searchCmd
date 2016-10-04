@@ -115,14 +115,22 @@ def dyn_search(delegate):
 
 def search_str(input_str, delegate, last=0):
     results = delegate.search(input_str)
+    col = int(subprocess.check_output(['stty', 'size']).split()[1])
+    lines = 0
     for index, cmd in enumerate(results):
         sys.stdout.write('\033[K')
         print index, ':', cmd
+        lines += 1+((len(cmd)-1)/col)
     if not last:
-        sys.stdout.write(('\033[K\n')*(5-len(results)))
-        sys.stdout.write('\033[6A')
+        if search_str.last_lines > lines:
+            sys.stdout.write(('\033[K\n')*(search_str.last_lines-lines))
+        else:
+            search_str.last_lines = lines
+        sys.stdout.write('\033['+str(search_str.last_lines+1)+'A')
     #sys.stdout.write('\033[6A')
     sys.stdout.flush()
+search_str.last_lines = 0
+
     #if results:
     #    inp = raw_input('Enter cmd to cpy to clipboard ').strip()
     #    try:
