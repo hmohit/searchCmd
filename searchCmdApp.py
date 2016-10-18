@@ -4,6 +4,7 @@ import os
 import sys
 import readline
 import threading
+import time
 
 from searchMetaData import SearchMetaData
 from argparse import ArgumentParser
@@ -65,10 +66,17 @@ def main():
 
         elif args.search:
             t = threading.Thread(target=dyn_search, args=(delegate,))
+            t.setDaemon(True)
             t.start()
-            in_str = raw_input('>')
-            t.join()
-            search_str(in_str.strip(), delegate, 1)
+            try:
+                raw_input('>')
+                sys.stdout.write('\033[A')
+            except KeyboardInterrupt:
+                exit()
+            finally:
+                dyn_search.done_event.set()
+                while threading.active_count() > 1:
+                    time.sleep(0.01)
 
             '''results = delegate.search(args.search)
             for index, cmd in enumerate(results):
@@ -103,30 +111,37 @@ def dyn_search(delegate):
     last_str = ''
     while True:
         in_str = readline.get_line_buffer()
-        if in_str and in_str[-1] == '\n':
+        time.sleep(0.0001)
+        if dyn_search.done_event.is_set():
+            print
+            search_str(last_str, delegate, 1)
             exit()
         if last_str != in_str:
             print
             last_str = in_str
             search_str(in_str, delegate)
-            print '>', in_str,
+            print ' '*(len(last_str)+5),
+            print '\r>', in_str,
             sys.stdout.flush()
+dyn_search.done_event = threading.Event()
 
 
 def search_str(input_str, delegate, last=0):
     results = delegate.search(input_str)
     col = int(subprocess.check_output(['stty', 'size']).split()[1])
     lines = 0
+    out_line = ''
     for index, cmd in enumerate(results):
         sys.stdout.write('\033[K')
-        print index, ':', cmd
-        lines += 1+((len(cmd)-1)/col)
+        out_line = str(index) + ':' + cmd
+        print '\r', out_line
+        lines += 1+((len(out_line)-1)/col)
     if not last:
         if search_str.last_lines > lines:
+            sys.stdout.write('\033[2K')
             sys.stdout.write(('\033[K\n')*(search_str.last_lines-lines))
-        else:
-            search_str.last_lines = lines
-        sys.stdout.write('\033['+str(search_str.last_lines+1)+'A')
+        sys.stdout.write('\033['+str(max(lines, search_str.last_lines)+1)+'A')
+        search_str.last_lines = lines
     #sys.stdout.write('\033[6A')
     sys.stdout.flush()
 search_str.last_lines = 0
