@@ -20,7 +20,7 @@ def main():
     parser = ArgumentParser(description='Search commands from database')
     parser.add_argument('-f', '--filename', required=False, help='file path to command list')
     parser.add_argument('-s', '--search', required=False, action='store_true', help='enter search string')
-    #parser.add_argument('-s', '--search', required=False, type=str, help='enter search string')
+    # parser.add_argument('-s', '--search', required=False, type=str, help='enter search string')
     parser.add_argument('-l', '--ls', required=False, action='store_true', help='enter search string')
 
     mutex_group1 = parser.add_mutually_exclusive_group()
@@ -120,9 +120,11 @@ def dyn_search(delegate):
             print
             last_str = in_str
             search_str(in_str, delegate)
-            print ' '*(len(last_str)+5),
+            print ' ' * (len(last_str) + 5),
             print '\r>', in_str,
             sys.stdout.flush()
+
+
 dyn_search.done_event = threading.Event()
 
 
@@ -135,26 +137,27 @@ def search_str(input_str, delegate, last=0):
         sys.stdout.write('\033[K')
         out_line = str(index) + ':' + cmd
         print '\r', out_line
-        lines += 1+((len(out_line)-1)/col)
+        lines += 1 + ((len(out_line) - 1) / col)
     if not last:
         if search_str.last_lines > lines:
             sys.stdout.write('\033[2K')
-            sys.stdout.write(('\033[K\n')*(search_str.last_lines-lines))
-        sys.stdout.write('\033['+str(max(lines, search_str.last_lines)+1)+'A')
+            sys.stdout.write(('\033[K\n') * (search_str.last_lines - lines))
+        sys.stdout.write('\033[' + str(max(lines, search_str.last_lines) + 1) + 'A')
         search_str.last_lines = lines
-    #sys.stdout.write('\033[6A')
+    # sys.stdout.write('\033[6A')
     sys.stdout.flush()
+
+
 search_str.last_lines = 0
 
-    #if results:
-    #    inp = raw_input('Enter cmd to cpy to clipboard ').strip()
-    #    try:
-    #        index = int(inp)
-    #    except:
-    #        if inp:
-    #            print "Input should be number "
-    #        return
-
+# if results:
+#    inp = raw_input('Enter cmd to cpy to clipboard ').strip()
+#    try:
+#        index = int(inp)
+#    except:
+#        if inp:
+#            print "Input should be number "
+#        return
 
 if __name__ == '__main__':
     main()
