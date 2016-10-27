@@ -1,4 +1,12 @@
-from __future__ import division
+#!/usr/bin/env python
+
+# Put Python imports here
+import sys
+import subprocess
+import readline
+import time
+
+# Put 3rd party imports here
 from fuzzywuzzy import process
 
 
@@ -7,6 +15,7 @@ class SearchMetaData:
         self.command_list = {}
         self.cache = []
         self.cache_size = 10
+        self.last_lines = 0
 
     def insert_in_cache(self, element):
         if element in self.cache:
@@ -29,6 +38,7 @@ class SearchMetaData:
         data = ''
         for cmd in self.command_list:
             data += ' :: '.join([cmd] + list(self.command_list[cmd])) + '\n'
+
         return data
 
     def delete(self, delete_str):
@@ -57,3 +67,44 @@ class SearchMetaData:
             return zip(*approx_matches)[0][:5]
         else:
             return approx_matches[:5]
+
+    def search_str(self, input_str, last=0):
+        results = self.search(input_str)
+        col = int(subprocess.check_output(['stty', 'size']).split()[1])
+        lines = 0
+
+        for index, cmd in enumerate(results):
+            sys.stdout.write('\033[K')
+            out_line = str(index) + ':' + cmd
+            print '\r', out_line
+            lines += 1 + ((len(out_line) - 1) / col)
+
+        if not last:
+            if self.last_lines > lines:
+                sys.stdout.write('\033[2K')
+                sys.stdout.write('\033[K\n' * (self.last_lines - lines))
+
+            sys.stdout.write('\033[' + str(max(lines, self.last_lines) + 1) + 'A')
+            self.last_lines = lines
+
+        sys.stdout.flush()
+
+    def dyn_search(self, done_event):
+        last_str = ''
+
+        while True:
+            in_str = readline.get_line_buffer()
+            time.sleep(0.0001)
+
+            if done_event.is_set():
+                print
+                self.search_str(last_str, 1)
+                exit()
+
+            if last_str != in_str:
+                print
+                last_str = in_str
+                self.search_str(in_str)
+                print ' ' * (len(last_str) + 5),
+                print '\r>', in_str,
+                sys.stdout.flush()
