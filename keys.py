@@ -14,7 +14,7 @@ class _Getch:
 
 
 class DisplayBuffer:
-    def __int__(self):
+    def __init__(self):
         lines = []
         row = 0
         col = 0
