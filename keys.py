@@ -26,21 +26,23 @@ class DisplayBuffer:
                               + self.search_str[self.x:]
             self.x -= 1
 
-
     def up_key_handler(self):
-        if self.row:
-            row -= 1
-
-
+        if self.y:
+            self.y -= 1
+        if not self.y:
+            self.x = len(self.search_str)
 
     def down_key_handler(self):
-        pass
+        if self.y < len(self.lines):
+            self.y += 1
 
     def left_key_handler(self):
-        pass
+        if not self.y and self.x:
+            self.x -= 1
 
     def right_key_handler(self):
-        pass
+        if not self.y and self.x < len(self.search_str):
+            self.x += 1
 
     def return_key_handler(self):
         pass
