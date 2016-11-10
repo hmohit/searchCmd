@@ -20,6 +20,12 @@ class DisplayBuffer:
         self.y = 0
         self.x = 0
 
+    def insert_key_handler(self, ch):
+        if not self.y:
+            self.search_str = self.search_str[:self.x] + ch \
+                              + self.search_str[self.x:]
+            self.x += 1
+
     def delete_key_handler(self):
         if not self.y and self.x:
             self.search_str = self.search_str[:self.x - 1] \
@@ -29,8 +35,6 @@ class DisplayBuffer:
     def up_key_handler(self):
         if self.y:
             self.y -= 1
-        if not self.y:
-            self.x = len(self.search_str)
 
     def down_key_handler(self):
         if self.y < len(self.lines):
