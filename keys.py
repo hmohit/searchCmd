@@ -15,15 +15,23 @@ class _Getch:
 
 class DisplayBuffer:
     def __init__(self):
-        lines = []
-        row = 0
-        col = 0
+        self.lines = []
+        self.search_str = ''
+        self.y = 0
+        self.x = 0
 
     def delete_key_handler(self):
-        pass
+        if not self.y and self.x:
+            self.search_str = self.search_str[:self.x - 1] \
+                              + self.search_str[self.x:]
+            self.x -= 1
+
 
     def up_key_handler(self):
-        pass
+        if self.row:
+            row -= 1
+
+
 
     def down_key_handler(self):
         pass
@@ -48,16 +56,21 @@ class DisplayBuffer:
         pass
 
 
+def dummy(input_str):
+    return [input_str]*5
+
+
 def main():
     getch = _Getch()
     display_buffer = DisplayBuffer()
     while True:
-        # ip_char = getch()
+        ip_char = getch()
         # # print ip_char.encode('string-escape')
         # if ip_char == '\x03':
         #     break
         #
-        # display_buffer.execute_key_handler(ip_char)
+        display_buffer.execute_key_handler(ip_char)
+
         display_buffer()
 
 
