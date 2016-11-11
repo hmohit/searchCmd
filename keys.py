@@ -2,6 +2,9 @@ import sys, tty, termios, time
 
 
 class _Getch:
+    def __init__(self):
+        pass
+
     def __call__(self):
         fd = sys.stdin.fileno()
         old_settings = termios.tcgetattr(fd)
@@ -19,6 +22,14 @@ class DisplayBuffer:
         self.search_str = ''
         self.y = 0
         self.x = 0
+        self.key_actions = {
+            '\x1b[A': self.up_key_handler,
+            '\x1b[B': self.down_key_handler,
+            '\x1b[C': self.right_key_handler,
+            '\x1b[D': self.left_key_handler,
+            '\x7f': self.delete_key_handler,
+            '\r': self.return_key_handler,
+        }
 
     def insert_key_handler(self, ch):
         if not self.y:
@@ -68,16 +79,11 @@ def dummy(input_str):
 
 def main():
     getch = _Getch()
-    display_buffer = DisplayBuffer()
     while True:
         ip_char = getch()
-        # # print ip_char.encode('string-escape')
-        # if ip_char == '\x03':
-        #     break
-        #
-        display_buffer.execute_key_handler(ip_char)
-
-        display_buffer()
+        print ip_char.encode('string-escape')
+        if ip_char == '\x03':
+            break
 
 
 if __name__ == '__main__':
