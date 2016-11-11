@@ -1,4 +1,3 @@
-<<<<<<< cfb5f295a319df4e4c11c2ef4843c2114d4e719f
 #!/usr/bin/env python
 
 # Put future imports here
