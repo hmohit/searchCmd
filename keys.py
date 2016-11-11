@@ -1,4 +1,15 @@
-import sys, tty, termios, time
+#!/usr/bin/env python
+
+# Put future imports here
+
+# Put Python imports here
+import sys
+import tty
+import termios
+import subprocess
+
+# Put searchCmd imports here
+from searchCmdApp import write_to_clipboard
 
 
 class _Getch:
@@ -17,11 +28,14 @@ class _Getch:
 
 
 class DisplayBuffer:
+    lines = []
+    search_str = ''
+    y = 0
+    x = 0
+    key_actions = {}
+    invalid_keys = []
+
     def __init__(self):
-        self.lines = []
-        self.search_str = ''
-        self.y = 0
-        self.x = 0
         self.key_actions = {
             '\x1b[A': self.up_key_handler,
             '\x1b[B': self.down_key_handler,
@@ -30,6 +44,7 @@ class DisplayBuffer:
             '\x7f': self.delete_key_handler,
             '\r': self.return_key_handler,
         }
+        self.invalid_keys = [27, 127, 9, 13, 65, 66, 67, 68]
 
     def insert_key_handler(self, ch):
         if not self.y:
@@ -60,14 +75,30 @@ class DisplayBuffer:
             self.x += 1
 
     def return_key_handler(self):
-        pass
+        if self.lines:
+            write_to_clipboard(self.lines[self.y - 1] if self.y else self.lines[0])
 
-    def exclude_key_handler(self):
-        pass
+        exit()
 
-    def execute_key_handler(self, char_input):
+    def is_insert_key(self, ch):
+        if ord(ch) in self.invalid_keys:
+            return False
+
+        else:
+            return True
+
+    @staticmethod
+    def get_col_width():
+        return int(subprocess.check_output(['stty', 'size']).split()[1])
+
+    def execute_key_handler(self, ch):
+        if ch.encode('string-escape') in self.key_actions:
+            self.key_actions[ch.encode('string-escape')]()
+
+        elif self.is_insert_key(ch):
+            self.insert_key_handler(ch)
+
         self.refresh_output()
-        pass
 
     def refresh_output(self):
         pass
