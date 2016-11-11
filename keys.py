@@ -11,7 +11,6 @@ import subprocess
 # Put searchCmd imports here
 from searchCmdApp import write_to_clipboard
 
-
 class _Getch:
     def __init__(self):
         pass
@@ -101,8 +100,60 @@ class DisplayBuffer:
         self.refresh_output()
 
     def refresh_output(self):
+        self.clear_screen()
+        sys.stdout.write('>' + self.search_str + '\r')
+
+        for line in self.lines:
+            sys.stdout.write(line + ['\n'])
+
+        self.move_cur_up(len(self.lines)+1)
+        self.move_cur_right(self.x)
+        self.term_hl_on()
+        sys.stdout.write(self.search_str[self.x])
+        self.term_reset()
+        self.move_cur_left()
+
+    def clear_screen(self):
+        sys.stdout.write('\r')
+        self.clear_line(len(self.lines))
+        self.move_cur_up(len(self.lines)+1)
+
+
+    def get_col_width(self):
         pass
 
+    @staticmethod
+    def clear_line(lines=1):
+        sys.stdout.write('\033[K\n'*lines)
+        DisplayBuffer.move_cur_up(lines)
+
+    @staticmethod
+    def term_reset():
+        sys.stdout.write('\033[0m')
+
+    @staticmethod
+    def term_hl_on():
+        sys.stdout.write('\033[7m')
+
+    @staticmethod
+    def move_cur_up(lines=1):
+        sys.stdout.write('\033[{}A'.format(lines))
+        sys.stdout.flush()
+
+    @staticmethod
+    def move_cur_down(lines=1):
+        sys.stdout.write('\033[{}B'.format(lines))
+        sys.stdout.flush()
+
+    @staticmethod
+    def move_cur_right(col=1):
+        sys.stdout.write('\033[{}C'.format(col))
+        sys.stdout.flush()
+
+    @staticmethod
+    def move_cur_left(col=1):
+        sys.stdout.write('\033[{}D'.format(col))
+        sys.stdout.flush()
 
 def dummy(input_str):
     return [input_str]*5
