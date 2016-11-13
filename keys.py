@@ -7,7 +7,6 @@ import sys
 import tty
 import termios
 import subprocess
-import pdb
 
 # Put searchCmd imports here
 from searchCmdApp import write_to_clipboard
@@ -193,18 +192,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-    # write_buffer = 'Hi there!\nHow \033[7ma\033[0mre you\n'
-    # lines = write_buffer.split('\n')
-    # # lines = filter(lambda x: len(x) > 0, lines)
-    # clear_lines = map(lambda x: ' ' * len(x), lines)
-    # clear_screen = '\n'.join(clear_lines)
-    # sys.stdout.write(write_buffer)
-    # time.sleep(2)
-    # sys.stdout.write('\033[2A')
-    # time.sleep(2)
-    # sys.stdout.write(clear_screen)
-    # sys.stdout.flush()
-    # sys.stdout.write('\033[2A')
-    # # print ' ' * 50 + '\r',
-    # time.sleep(2)
