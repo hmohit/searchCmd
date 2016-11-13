@@ -42,12 +42,12 @@ class DisplayBuffer:
     def __init__(self):
         self.refresh_output()
         self.key_actions = {
-            r'\x1b[A': self.up_key_handler,
-            r'\x1b[B': self.down_key_handler,
-            r'\x1b[C': self.right_key_handler,
-            r'\x1b[D': self.left_key_handler,
-            r'\x7f': self.delete_key_handler,
-            r'\r': self.return_key_handler,
+            '\x1b[A': self.up_key_handler,
+            '\x1b[B': self.down_key_handler,
+            '\x1b[C': self.right_key_handler,
+            '\x1b[D': self.left_key_handler,
+            '\x7f': self.delete_key_handler,
+            '\r': self.return_key_handler,
         }
         self.invalid_keys = [27, 127, 9, 13]
 
@@ -94,8 +94,8 @@ class DisplayBuffer:
             return True
 
     def execute_key_handler(self, ch):
-        if ch.encode('string-escape') in self.key_actions:
-            self.key_actions[ch.encode('string-escape')]()
+        if ch in self.key_actions:
+            self.key_actions[ch]()
         elif self.is_insert_key(ch):
             self.insert_key_handler(ch)
 
