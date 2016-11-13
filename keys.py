@@ -7,11 +7,13 @@ import sys
 import tty
 import termios
 import subprocess
+import pdb
 
 # Put searchCmd imports here
 from searchCmdApp import write_to_clipboard
 
-class _Getch:
+
+class GetCharacter:
     def __init__(self):
         pass
 
@@ -20,7 +22,11 @@ class _Getch:
         old_settings = termios.tcgetattr(fd)
         try:
             tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
+            ch = ''
+            while True:
+                ch += sys.stdin.read(1)
+                if ch != '\x1b' and ch != '\x1b[':
+                    break
         finally:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         return ch
@@ -35,27 +41,30 @@ class DisplayBuffer:
     invalid_keys = []
 
     def __init__(self):
+        self.refresh_output()
         self.key_actions = {
-            '\x1b[A': self.up_key_handler,
-            '\x1b[B': self.down_key_handler,
-            '\x1b[C': self.right_key_handler,
-            '\x1b[D': self.left_key_handler,
-            '\x7f': self.delete_key_handler,
-            '\r': self.return_key_handler,
+            r'\x1b[A': self.up_key_handler,
+            r'\x1b[B': self.down_key_handler,
+            r'\x1b[C': self.right_key_handler,
+            r'\x1b[D': self.left_key_handler,
+            r'\x7f': self.delete_key_handler,
+            r'\r': self.return_key_handler,
         }
-        self.invalid_keys = [27, 127, 9, 13, 65, 66, 67, 68]
+        self.invalid_keys = [27, 127, 9, 13]
 
     def insert_key_handler(self, ch):
         if not self.y:
             self.search_str = self.search_str[:self.x] + ch \
                               + self.search_str[self.x:]
             self.x += 1
+            self.search()
 
     def delete_key_handler(self):
         if not self.y and self.x:
             self.search_str = self.search_str[:self.x - 1] \
                               + self.search_str[self.x:]
             self.x -= 1
+            self.search()
 
     def up_key_handler(self):
         if self.y:
@@ -76,24 +85,18 @@ class DisplayBuffer:
     def return_key_handler(self):
         if self.lines:
             write_to_clipboard(self.lines[self.y - 1] if self.y else self.lines[0])
-
+        self.clear_screen()
         exit()
 
     def is_insert_key(self, ch):
         if ord(ch) in self.invalid_keys:
             return False
-
         else:
             return True
-
-    @staticmethod
-    def get_col_width():
-        return int(subprocess.check_output(['stty', 'size']).split()[1])
 
     def execute_key_handler(self, ch):
         if ch.encode('string-escape') in self.key_actions:
             self.key_actions[ch.encode('string-escape')]()
-
         elif self.is_insert_key(ch):
             self.insert_key_handler(ch)
 
@@ -101,30 +104,44 @@ class DisplayBuffer:
 
     def refresh_output(self):
         self.clear_screen()
-        sys.stdout.write('>' + self.search_str + '\r')
+        self.display_search_str()
+        self.display_search_result()
+        self.move_cur_up(len(self.lines) + 1)
+        self.move_cur_right(self.x+1)
 
-        for line in self.lines:
-            sys.stdout.write(line + ['\n'])
+    def display_search_str(self):
+        in_str = self.search_str + ' '
+        pos = self.x
+        out_str = '>'
+        if not self.y:
+            out_str += in_str[:pos] + self.highlight_str(in_str[pos]) + in_str[pos + 1:]
+        else:
+            out_str += in_str
 
-        self.move_cur_up(len(self.lines)+1)
-        self.move_cur_right(self.x)
-        self.term_hl_on()
-        sys.stdout.write(self.search_str[self.x])
-        self.term_reset()
-        self.move_cur_left()
+        out_str += '\n'
+        sys.stdout.write(out_str)
+
+    def display_search_result(self):
+        lines = self.lines
+        out_lines = ''
+        for idx, line in enumerate(lines):
+            if idx + 1 == self.y:
+                out_lines += self.highlight_str(line) + '\n'
+            else:
+                out_lines += line + '\n'
+
+        sys.stdout.write(out_lines)
 
     def clear_screen(self):
-        sys.stdout.write('\r')
-        self.clear_line(len(self.lines))
-        self.move_cur_up(len(self.lines)+1)
+        self.clear_line(len(self.lines)+1)
 
-
-    def get_col_width(self):
-        pass
+    @staticmethod
+    def highlight_str(string):
+        return '\033[7m' + string + '\033[0m'
 
     @staticmethod
     def clear_line(lines=1):
-        sys.stdout.write('\033[K\n'*lines)
+        sys.stdout.write('\033[K\n' * lines)
         DisplayBuffer.move_cur_up(lines)
 
     @staticmethod
@@ -137,35 +154,40 @@ class DisplayBuffer:
 
     @staticmethod
     def move_cur_up(lines=1):
-        sys.stdout.write('\033[{}A'.format(lines))
+        sys.stdout.write('\033[{0}A'.format(lines))
         sys.stdout.flush()
 
     @staticmethod
     def move_cur_down(lines=1):
-        sys.stdout.write('\033[{}B'.format(lines))
+        sys.stdout.write('\033[{0}B'.format(lines))
         sys.stdout.flush()
 
     @staticmethod
     def move_cur_right(col=1):
-        sys.stdout.write('\033[{}C'.format(col))
+        sys.stdout.write('\033[{0}C'.format(col))
         sys.stdout.flush()
 
     @staticmethod
     def move_cur_left(col=1):
-        sys.stdout.write('\033[{}D'.format(col))
+        sys.stdout.write('\033[{0}D'.format(col))
         sys.stdout.flush()
 
-def dummy(input_str):
-    return [input_str]*5
+    @staticmethod
+    def get_col_width():
+        return int(subprocess.check_output(['stty', 'size']).split()[1])
+
+    def search(self):
+        self.lines = [self.search_str] * 5
 
 
 def main():
-    getch = _Getch()
+    get_character = GetCharacter()
+    display_content = DisplayBuffer()
     while True:
-        ip_char = getch()
-        print ip_char.encode('string-escape')
+        ip_char = get_character()
         if ip_char == '\x03':
             break
+        display_content.execute_key_handler(ip_char)
 
 
 if __name__ == '__main__':
