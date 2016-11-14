@@ -18,6 +18,9 @@ class SearchMetaData:
         self.last_lines = 0
 
     def insert_in_cache(self, element):
+        if not element:
+            pass
+
         if element in self.cache:
             self.cache.remove(element)
         elif len(self.cache) == self.cache_size:
