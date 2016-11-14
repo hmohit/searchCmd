@@ -10,7 +10,8 @@ import subprocess
 
 
 def write_to_clipboard(output):
-    process = subprocess.Popen('pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+    process = subprocess.Popen('pbcopy', env={'LANG': 'en_US.UTF-8'},
+                               stdin=subprocess.PIPE)
     process.communicate(output.encode('utf-8'))
 
 
@@ -93,7 +94,7 @@ class DisplayBuffer:
         if self.lines:
             self.selected = self.lines[self.y - 1 if self.y else 0]
             write_to_clipboard(self.selected)
-
+        self.search()
         self.clear_screen()
         self.cont = False
 
