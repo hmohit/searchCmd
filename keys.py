@@ -8,8 +8,10 @@ import tty
 import termios
 import subprocess
 
-# Put searchCmd imports here
-from searchCmdApp import write_to_clipboard
+
+def write_to_clipboard(output):
+    process = subprocess.Popen('pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
+    process.communicate(output.encode('utf-8'))
 
 
 class GetCharacter:
@@ -38,8 +40,11 @@ class DisplayBuffer:
     x = 0
     key_actions = {}
     invalid_keys = []
+    cont = True
+    prev_lines = []
+    selected = ''
 
-    def __init__(self):
+    def __init__(self, delegate):
         self.refresh_output()
         self.key_actions = {
             '\x1b[A': self.up_key_handler,
@@ -49,7 +54,10 @@ class DisplayBuffer:
             '\x7f': self.delete_key_handler,
             '\r': self.return_key_handler,
         }
+
+        self.delegate = delegate
         self.invalid_keys = [27, 127, 9, 13]
+        self.cont = True
 
     def insert_key_handler(self, ch):
         if not self.y:
@@ -83,9 +91,11 @@ class DisplayBuffer:
 
     def return_key_handler(self):
         if self.lines:
-            write_to_clipboard(self.lines[self.y - 1] if self.y else self.lines[0])
+            self.selected = self.lines[self.y - 1 if self.y else 0]
+            write_to_clipboard(self.selected)
+
         self.clear_screen()
-        exit()
+        self.cont = False
 
     def is_insert_key(self, ch):
         if ord(ch) in self.invalid_keys:
@@ -99,7 +109,8 @@ class DisplayBuffer:
         elif self.is_insert_key(ch):
             self.insert_key_handler(ch)
 
-        self.refresh_output()
+        if ch != '\r':
+            self.refresh_output()
 
     def refresh_output(self):
         self.clear_screen()
@@ -132,7 +143,7 @@ class DisplayBuffer:
         sys.stdout.write(out_lines)
 
     def clear_screen(self):
-        self.clear_line(len(self.lines)+1)
+        self.clear_line(len(self.prev_lines) + 1)
 
     @staticmethod
     def highlight_str(string):
@@ -176,18 +187,12 @@ class DisplayBuffer:
         return int(subprocess.check_output(['stty', 'size']).split()[1])
 
     def search(self):
-        self.lines = [self.search_str] * 5
+        self.prev_lines = self.lines
+        self.lines = self.delegate.search(self.search_str)
 
 
 def main():
-    get_character = GetCharacter()
-    display_content = DisplayBuffer()
-    while True:
-        ip_char = get_character()
-        if ip_char == '\x03':
-            break
-        display_content.execute_key_handler(ip_char)
-
+    pass
 
 if __name__ == '__main__':
     main()

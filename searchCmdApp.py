@@ -4,7 +4,6 @@
 from __future__ import division
 
 # Put Python imports here
-import subprocess
 import os
 import sys
 import threading
@@ -14,11 +13,9 @@ import pickle
 
 # Put searchCmd imports here
 from searchMetaData import SearchMetaData
-
-
-def write_to_clipboard(output):
-    process = subprocess.Popen('pbcopy', env={'LANG': 'en_US.UTF-8'}, stdin=subprocess.PIPE)
-    process.communicate(output.encode('utf-8'))
+from keys import DisplayBuffer
+from keys import GetCharacter
+from keys import write_to_clipboard
 
 
 def cached_search(search_str, delegate):
@@ -37,6 +34,16 @@ def cached_search(search_str, delegate):
 
         write_to_clipboard(results[index])
         delegate.insert_in_cache(results[index])
+
+
+def type_ahead_search(delegate):
+    get_character = GetCharacter()
+    display_content = DisplayBuffer(delegate)
+
+    while display_content.cont:
+        display_content.execute_key_handler(get_character())
+
+    delegate.insert_in_cache(display_content.selected)
 
 
 def dynamic_search(delegate):
@@ -106,7 +113,7 @@ def main():
                     pickle.dump(delegate, open(meta_file, 'wb'))
 
         elif args.search:
-            dynamic_search(delegate)
+            type_ahead_search(delegate)
             pickle.dump(delegate, open(meta_file, 'wb'))
 
         elif args.add:
