@@ -125,7 +125,8 @@ class DisplayBuffer:
         pos = self.x
         out_str = '>'
         if not self.y:
-            out_str += in_str[:pos] + self.highlight_str(in_str[pos]) + in_str[pos + 1:]
+            out_str += in_str[:pos] + self.highlight_str(in_str[pos]) \
+                       + in_str[pos + 1:]
         else:
             out_str += in_str
 
@@ -197,4 +198,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
