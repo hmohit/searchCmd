@@ -7,6 +7,7 @@ import sys
 import tty
 import termios
 import subprocess
+import time
 
 
 def write_to_clipboard(output):
@@ -117,7 +118,8 @@ class DisplayBuffer:
         self.clear_screen()
         self.display_search_str()
         self.display_search_result()
-        self.move_cur_up(len(self.lines) + 1)
+        self.move_cur_up(self.get_num_lines(self.lines)
+                         + self.get_num_lines([self.search_str]))
         self.move_cur_right(self.x+1)
 
     def display_search_str(self):
@@ -145,7 +147,23 @@ class DisplayBuffer:
         sys.stdout.write(out_lines)
 
     def clear_screen(self):
-        self.clear_line(len(self.prev_lines) + 1)
+        """
+        This function goes to 0,0 (at the promt) and then
+        clears the screen
+        """
+        if self.x:
+            self.move_cur_up(self.x/self.get_col_width())
+        self.clear_line(self.get_num_lines(self.prev_lines) +
+                        self.get_num_lines([self.search_str]))
+        #time.sleep(2)
+
+    @staticmethod
+    def get_num_lines(lines):
+        col = DisplayBuffer.get_col_width()
+
+        def num_rows(x):
+            return 1 if not len(x) else (len(x) - 1) / col + 1
+        return sum(map(num_rows, lines))
 
     @staticmethod
     def highlight_str(string):
@@ -166,13 +184,15 @@ class DisplayBuffer:
 
     @staticmethod
     def move_cur_up(lines=1):
-        sys.stdout.write('\033[{0}A'.format(lines))
-        sys.stdout.flush()
+        if lines:
+            sys.stdout.write('\033[{0}A'.format(lines))
+            sys.stdout.flush()
 
     @staticmethod
     def move_cur_down(lines=1):
-        sys.stdout.write('\033[{0}B'.format(lines))
-        sys.stdout.flush()
+        if lines:
+            sys.stdout.write('\033[{0}B'.format(lines))
+            sys.stdout.flush()
 
     @staticmethod
     def move_cur_right(col=1):
