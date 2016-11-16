@@ -25,6 +25,9 @@ class GetCharacter:
         old_settings = termios.tcgetattr(fd)
         try:
             tty.setraw(sys.stdin.fileno())
+            new_settings = termios.tcgetattr(fd)
+            new_settings[3] = new_settings[3] & ~termios.ECHO
+            termios.tcsetattr(fd, termios.TCSADRAIN, new_settings)
             ch = ''
             while True:
                 ch += sys.stdin.read(1)
@@ -40,6 +43,8 @@ class DisplayBuffer:
     search_str = ''
     y = 0
     x = 0
+    prev_x = 0
+    prev_str = ''
     key_actions = {}
     invalid_keys = []
     cont = True
@@ -63,15 +68,19 @@ class DisplayBuffer:
 
     def insert_key_handler(self, ch):
         if not self.y:
+            self.prev_str = self.search_str
             self.search_str = self.search_str[:self.x] + ch \
                               + self.search_str[self.x:]
+            self.prev_x = self.x
             self.x += 1
             self.search()
 
     def delete_key_handler(self):
         if not self.y and self.x:
+            self.prev_str = self.search_str
             self.search_str = self.search_str[:self.x - 1] \
                               + self.search_str[self.x:]
+            self.prev_x = self.x
             self.x -= 1
             self.search()
 
@@ -85,10 +94,12 @@ class DisplayBuffer:
 
     def left_key_handler(self):
         if not self.y and self.x:
+            self.prev_x = self.x
             self.x -= 1
 
     def right_key_handler(self):
         if not self.y and self.x < len(self.search_str):
+            self.prev_x = self.x
             self.x += 1
 
     def return_key_handler(self):
@@ -119,8 +130,9 @@ class DisplayBuffer:
         self.display_search_str()
         self.display_search_result()
         self.move_cur_up(self.get_num_lines(self.lines)
-                         + self.get_num_lines([self.search_str]))
-        self.move_cur_right(self.x+1)
+                         + self.get_num_lines(['>' + self.search_str + ' ']))
+        self.move_cur_down((self.x + 1)/self.get_col_width())
+        self.move_cur_right((self.x + 1) % self.get_col_width())
 
     def display_search_str(self):
         in_str = self.search_str + ' '
@@ -148,13 +160,13 @@ class DisplayBuffer:
 
     def clear_screen(self):
         """
-        This function goes to 0,0 (at the promt) and then
+        This function goes to 0,0 (at the prompt) and then
         clears the screen
         """
         if self.x:
-            self.move_cur_up(self.x/self.get_col_width())
+            self.move_cur_up((self.prev_x+1)/self.get_col_width())
         self.clear_line(self.get_num_lines(self.prev_lines) +
-                        self.get_num_lines([self.search_str]))
+                        self.get_num_lines(['>' + self.prev_str + ' ']))
         #time.sleep(2)
 
     @staticmethod
