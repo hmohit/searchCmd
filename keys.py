@@ -7,6 +7,7 @@ import sys
 import tty
 import termios
 import subprocess
+import time
 
 
 def write_to_clipboard(output):
@@ -24,6 +25,9 @@ class GetCharacter:
         old_settings = termios.tcgetattr(fd)
         try:
             tty.setraw(sys.stdin.fileno())
+            new_settings = termios.tcgetattr(fd)
+            new_settings[3] = new_settings[3] & ~termios.ECHO
+            termios.tcsetattr(fd, termios.TCSADRAIN, new_settings)
             ch = ''
             while True:
                 ch += sys.stdin.read(1)
@@ -39,6 +43,8 @@ class DisplayBuffer:
     search_str = ''
     y = 0
     x = 0
+    prev_x = 0
+    prev_str = ''
     key_actions = {}
     invalid_keys = []
     cont = True
@@ -62,15 +68,19 @@ class DisplayBuffer:
 
     def insert_key_handler(self, ch):
         if not self.y:
+            self.prev_str = self.search_str
             self.search_str = self.search_str[:self.x] + ch \
                               + self.search_str[self.x:]
+            self.prev_x = self.x
             self.x += 1
             self.search()
 
     def delete_key_handler(self):
         if not self.y and self.x:
+            self.prev_str = self.search_str
             self.search_str = self.search_str[:self.x - 1] \
                               + self.search_str[self.x:]
+            self.prev_x = self.x
             self.x -= 1
             self.search()
 
@@ -84,10 +94,12 @@ class DisplayBuffer:
 
     def left_key_handler(self):
         if not self.y and self.x:
+            self.prev_x = self.x
             self.x -= 1
 
     def right_key_handler(self):
         if not self.y and self.x < len(self.search_str):
+            self.prev_x = self.x
             self.x += 1
 
     def return_key_handler(self):
@@ -117,8 +129,10 @@ class DisplayBuffer:
         self.clear_screen()
         self.display_search_str()
         self.display_search_result()
-        self.move_cur_up(len(self.lines) + 1)
-        self.move_cur_right(self.x+1)
+        self.move_cur_up(self.get_num_lines(self.lines)
+                         + self.get_num_lines(['>' + self.search_str + ' ']))
+        self.move_cur_down((self.x + 1)/self.get_col_width())
+        self.move_cur_right((self.x + 1) % self.get_col_width())
 
     def display_search_str(self):
         in_str = self.search_str + ' '
@@ -145,7 +159,23 @@ class DisplayBuffer:
         sys.stdout.write(out_lines)
 
     def clear_screen(self):
-        self.clear_line(len(self.prev_lines) + 1)
+        """
+        This function goes to 0,0 (at the prompt) and then
+        clears the screen
+        """
+        if self.x:
+            self.move_cur_up((self.prev_x+1)/self.get_col_width())
+        self.clear_line(self.get_num_lines(self.prev_lines) +
+                        self.get_num_lines(['>' + self.prev_str + ' ']))
+        #time.sleep(2)
+
+    @staticmethod
+    def get_num_lines(lines):
+        col = DisplayBuffer.get_col_width()
+
+        def num_rows(x):
+            return 1 if not len(x) else (len(x) - 1) / col + 1
+        return sum(map(num_rows, lines))
 
     @staticmethod
     def highlight_str(string):
@@ -166,13 +196,15 @@ class DisplayBuffer:
 
     @staticmethod
     def move_cur_up(lines=1):
-        sys.stdout.write('\033[{0}A'.format(lines))
-        sys.stdout.flush()
+        if lines:
+            sys.stdout.write('\033[{0}A'.format(lines))
+            sys.stdout.flush()
 
     @staticmethod
     def move_cur_down(lines=1):
-        sys.stdout.write('\033[{0}B'.format(lines))
-        sys.stdout.flush()
+        if lines:
+            sys.stdout.write('\033[{0}B'.format(lines))
+            sys.stdout.flush()
 
     @staticmethod
     def move_cur_right(col=1):
